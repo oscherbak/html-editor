@@ -1,12 +1,12 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const md5 = require('md5');
 
 const app = express();
 const jsonParser = bodyParser.json();
 
 app.use(express.static(__dirname + '/client'));
+app.use("/storage", express.static(__dirname + "/storage"));
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/client/index.html");
@@ -14,20 +14,23 @@ app.get("/", (req, res) => {
 
 app.post("/save", jsonParser, (req, res) => {
     const data = req.body;
-    const { markup } = data;
-    const hash = md5(markup);
-    const fileName = `document_${hash}.html`;
+    const { markup, fileName } = data;
 
-    fs.writeFileSync(`storage/${fileName}`, markup);
-    res.send({ id: hash });
+    if (fileName) {
+        fs.writeFileSync(`storage/${fileName}.html`, markup);
+        res.send('ok');
+    } else {
+        res.status(400).send({
+            message: 'provide fileName'
+        });
+    }
 });
 
-app.get('/download', (req, res) => {
-    const { id } = req.query;
-    const pathToFile = `${__dirname}/storage/document_${id}.html`;
-
-    res.download(pathToFile);
-})
+// app.get('/download', (req, res) => {
+//     const pathToFile = `${__dirname}/storage/document.html`;
+//
+//     res.download(pathToFile);
+// })
 
 app.listen(3000, () => {
     console.log("Application started and Listening on port 3000");

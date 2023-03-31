@@ -1,24 +1,74 @@
-$('#get-document-btn').click(async () => {
-    const inputValue = $('#url-input')[0].value;
-    const $summernoteBlock = $('#summernote');
+const getFileNameFromURL = () => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    const { fileName } = params;
 
-    $summernoteBlock[0].innerHTML = await $.ajax(inputValue);
-    $summernoteBlock.summernote();
-    $('#download-file-btn').show();
-    $('.url-block-wrapper').remove();
-});
+    return fileName;
+}
 
-$('#download-file-btn').click(async () => {
+const initClient = () => {
+    const fileName = getFileNameFromURL();
+
+    if (fileName) {
+        $.ajax(`/storage/${fileName}.html`).then((res) => {
+            const $summernoteBlock = $('#summernote');
+
+            $summernoteBlock[0].innerHTML = res;
+            $summernoteBlock.summernote();
+            $('.action-buttons-wrapper').show();
+            $('.url-block-wrapper').remove();
+        })
+        .catch(() => {
+            document.body.innerHTML = '<h1 class="text-center">Document Not found</h1>'
+        });
+    } else {
+        document.body.innerHTML = '<h1 class="text-center">Document Not found</h1>';
+    }
+}
+
+const printSuccessMessageAndRedirect = () => {
+    $('.action-buttons-wrapper').html('<h3 class="success-message">Document saved ✓</h3>');
+
+    setTimeout(() => {
+        window.location.href = document.referrer || 'https://ridgemax.co'
+    },2000);
+    // window.location.href = redirected url
+}
+
+$('#save-btn').click(() => {
     const markup = $('#summernote').summernote('code');
 
-    const response = await $.ajax({
+    $.ajax({
         url: '/save',
         contentType: 'application/json',
         method: 'post',
         data: JSON.stringify({
-            markup
+            markup,
+            fileName: getFileNameFromURL()
         })
     });
 
-    window.location.href = '/download?id=' + response.id;
-})
+    printSuccessMessageAndRedirect();
+});
+
+$('#save-as-btn').click(() => {
+    let fileName = prompt("Type name for your new file");
+    const markup = $('#summernote').summernote('code');
+
+    if (fileName) {
+        $.ajax({
+            url: '/save',
+            contentType: 'application/json',
+            method: 'post',
+            data: JSON.stringify({
+                markup,
+                fileName
+            })
+        });
+
+        printSuccessMessageAndRedirect();
+    }
+
+});
+
+initClient();
