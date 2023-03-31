@@ -30,7 +30,7 @@ const printSuccessMessageAndRedirect = () => {
     $('.action-buttons-wrapper').html('<h3 class="success-message">Document saved ✓</h3>');
 
     setTimeout(() => {
-        window.location.href = document.referrer || 'https://ridgemax.co'
+        window.location.href = document.referrer || 'https://google.com'
     },2000);
     // window.location.href = redirected url
 }
@@ -72,7 +72,7 @@ $('#save-as-btn').click(() => {
 });
 
 $('#cancel-btn').click(() => {
-    window.location.href = document.referrer || 'https://ridgemax.co';
+    window.location.href = document.referrer || 'https://google.com';
 });
 
 initClient();
