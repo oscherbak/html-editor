@@ -30,9 +30,16 @@ const printSuccessMessageAndRedirect = () => {
     $('.action-buttons-wrapper').html('<h3 class="success-message">Document saved ✓</h3>');
 
     setTimeout(() => {
-        window.location.href = document.referrer || 'https://google.com'
+        redirect();
     },2000);
-    // window.location.href = redirected url
+}
+
+const redirect = () => {
+    const url = new URL(window.location.href);
+    const navigate = url.searchParams.get("redirect");
+
+    window.location.href = navigate || document.referrer || 'https://google.com';
+
 }
 
 $('#save-btn').click(() => {
@@ -68,11 +75,8 @@ $('#save-as-btn').click(() => {
 
         printSuccessMessageAndRedirect();
     }
-
 });
 
-$('#cancel-btn').click(() => {
-    window.location.href = document.referrer || 'https://google.com';
-});
+$('#cancel-btn').click(redirect);
 
 initClient();
