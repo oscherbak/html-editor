@@ -71,4 +71,8 @@ $('#save-as-btn').click(() => {
 
 });
 
+$('#cancel-btn').click(() => {
+    window.location.href = document.referrer || 'https://ridgemax.co';
+});
+
 initClient();
