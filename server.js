@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const fs = require('fs');
-
 const app = express();
 const jsonParser = bodyParser.json();
 
@@ -11,6 +10,14 @@ app.use("/storage", express.static(__dirname + "/storage"));
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/client/index.html");
 });
+
+app.get("/documents", (req, res) => {
+    var files = fs.readdirSync('storage').filter(fn => fn.endsWith('.html')) || [];
+
+    res.status(200).send({
+        files: files.map((fileName) => fileName.replace('.html', ''))
+    });
+})
 
 app.post("/save", jsonParser, (req, res) => {
     const data = req.body;

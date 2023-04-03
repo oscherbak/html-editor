@@ -1,0 +1,26 @@
+.autocomplete-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+#autocomplete {
+    width: 400px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    padding-left: 15px;
+}
+
+.ui-autocomplete {
+    border-radius: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+.ui-autocomplete li {
+    padding-bottom: 0;
+}
