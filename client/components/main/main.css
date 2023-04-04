@@ -4,6 +4,8 @@ body {
 
 .container {
     margin-top: 20px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .document-name {
@@ -18,7 +20,7 @@ body {
 .action-buttons-wrapper {
     display: none;
     padding-bottom: 100px;
-    padding-top: 100px;
+    padding-top: 50px;
 }
 
 .action-buttons-wrapper button {
@@ -27,4 +29,5 @@ body {
 
 .success-message {
     color: green;
+    margin-left: 15px;
 }

@@ -1,13 +1,15 @@
 .autocomplete-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 50px;
+    display: flex;
+}
+
+.autocomplete-wrapper .divider {
+    margin: 13px;
 }
 
 #autocomplete {
     width: 400px;
-    height: 40px;
+    height: 46px;
     border-radius: 8px;
     font-size: 16px;
     padding-left: 15px;

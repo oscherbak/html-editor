@@ -1,33 +1,44 @@
 (function () {
-    const getFileNameFromURL = () => {
+    const serializeParams = () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        const params = Object.fromEntries(urlSearchParams.entries());
-        const { fileName } = params;
 
-        return fileName;
+        return Object.fromEntries(urlSearchParams.entries());
     }
 
     const initClient = () => {
-        const fileName = getFileNameFromURL();
+        const { fileName, mode } = serializeParams();
 
         if (fileName) {
+            $('.divider, #create-new').remove();
+
             $.ajax(`/storage/${fileName}.html`).then((res) => {
                 const $summernoteBlock = $('#summernote');
 
                 $summernoteBlock[0].innerHTML = res;
-                $summernoteBlock.summernote();
+                $summernoteBlock.summernote({
+                    minHeight: 400
+                });
                 $('.action-buttons-wrapper').show();
-                $('.url-block-wrapper').remove();
                 $('.document-name').html(`${fileName}.html`);
             })
                 .catch(() => {
-                    document.body.innerHTML = '<h1 class="text-center">Document Not found</h1>'
+                    document.body.innerHTML = '<h1">Document Not found</h1>'
                 });
+        } else if (mode === 'creation') {
+            const $summernoteBlock = $('#summernote');
+
+            $summernoteBlock[0].innerHTML = '';
+            $summernoteBlock.summernote({
+                minHeight: 400
+            });
+            $('#save-btn').remove();
+            $('.action-buttons-wrapper').show();
+            $('.divider, #create-new').remove();
         }
     }
 
     const printSuccessMessageAndRedirect = () => {
-        $('body').html('<h3 class="success-message text-center">Document saved ✓</h3>');
+        $('body').html('<h3 class="success-message">Document saved ✓</h3>');
 
         setTimeout(() => {
             redirect();
@@ -41,6 +52,7 @@
 
     $('#save-btn').click(() => {
         const markup = $('#summernote').summernote('code');
+        const { fileName } = serializeParams();
 
         $.ajax({
             url: '/save',
@@ -48,7 +60,7 @@
             method: 'post',
             data: JSON.stringify({
                 markup,
-                fileName: getFileNameFromURL()
+                fileName
             })
         });
 
@@ -73,6 +85,10 @@
             printSuccessMessageAndRedirect();
         }
     });
+
+    $('#create-new').click(() => {
+        window.location.href = '?mode=creation';
+    })
 
     $('#cancel-btn').click(redirect);
 
