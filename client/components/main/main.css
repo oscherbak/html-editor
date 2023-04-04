@@ -6,6 +6,11 @@ body {
     margin-top: 20px;
 }
 
+.document-name {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 .summernote-wrapper {
     width: 100%;
 }
@@ -20,6 +25,6 @@ body {
     margin: 15px;
 }
 
-.action-buttons-wrapper .success-message {
+.success-message {
     color: green;
 }

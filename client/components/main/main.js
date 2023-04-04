@@ -18,28 +18,24 @@
                 $summernoteBlock.summernote();
                 $('.action-buttons-wrapper').show();
                 $('.url-block-wrapper').remove();
+                $('.document-name').html(`${fileName}.html`);
             })
                 .catch(() => {
                     document.body.innerHTML = '<h1 class="text-center">Document Not found</h1>'
                 });
-        } else {
-            // document.body.innerHTML = '<h1 class="text-center">Document Not found</h1>';
         }
     }
 
     const printSuccessMessageAndRedirect = () => {
-        $('.action-buttons-wrapper').html('<h3 class="success-message">Document saved ✓</h3>');
+        $('body').html('<h3 class="success-message text-center">Document saved ✓</h3>');
 
         setTimeout(() => {
             redirect();
-        },2000);
+        },1500);
     }
 
     const redirect = () => {
-        const url = new URL(window.location.href);
-        const navigate = url.searchParams.get("redirect");
-
-        window.location.href = navigate || document.referrer || 'https://google.com';
+        window.location.href = '/';
 
     }
 
@@ -81,4 +77,4 @@
     $('#cancel-btn').click(redirect);
 
     initClient();
-})()
+})();
