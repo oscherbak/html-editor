@@ -17,6 +17,21 @@ body {
     width: 100%;
 }
 
+.editor-wrapper {
+    position: relative;
+}
+
+.editor-wrapper #unfilled-tags {
+    position: absolute;
+    left: calc(100% + 20px);
+    top: 0
+}
+
+#unfilled-tags .tag-to-be-filled {
+    color: red;
+    padding-bottom: 7px;
+}
+
 .action-buttons-wrapper {
     display: none;
     padding-bottom: 100px;

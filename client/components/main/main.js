@@ -1,4 +1,37 @@
 (function () {
+    const editorMixin = {
+        callbacks: {
+            onChange: function(contents, $editable) {
+                displayUnfilledTags(extractContentInDoubleBraces(contents));
+            }
+        }
+    }
+
+    const displayUnfilledTags = (arr) => {
+        if (Array.isArray(arr)) {
+            let str = ''
+
+            arr.forEach(tag => {
+                str += `<div class="tag-to-be-filled">{{&nbsp;${tag}&nbsp;}}</div>`
+            })
+
+            document.getElementById('unfilled-tags').innerHTML = str;
+        }
+    }
+
+    const extractContentInDoubleBraces = (inputString) => {
+        const regex = /{{(.*?)}}/g;
+        const matches = [];
+        let match;
+
+        while ((match = regex.exec(inputString)) !== null) {
+            matches.push(match[1].trim());
+        }
+
+        return matches;
+    }
+
+
     const serializeParams = () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
 
@@ -14,9 +47,12 @@
             $.ajax(`/storage/${fileName}.html`).then((res) => {
                 const $summernoteBlock = $('#summernote');
 
+                displayUnfilledTags(extractContentInDoubleBraces(res));
+
                 $summernoteBlock[0].innerHTML = res;
                 $summernoteBlock.summernote({
-                    minHeight: 400
+                    minHeight: 400,
+                    ...editorMixin
                 });
                 $('.action-buttons-wrapper').show();
                 $('.document-name').html(`${fileName}.html`);
@@ -29,7 +65,8 @@
 
             $summernoteBlock[0].innerHTML = '';
             $summernoteBlock.summernote({
-                minHeight: 400
+                minHeight: 400,
+                ...editorMixin
             });
             $('#save-btn').remove();
             $('.action-buttons-wrapper').show();
