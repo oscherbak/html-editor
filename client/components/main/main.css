@@ -46,3 +46,18 @@ body {
     color: green;
     margin-left: 15px;
 }
+
+.popup {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    max-width: 500px;
+}
+
+.popup button {
+    cursor: pointer;
+    margin: 5px;
+}

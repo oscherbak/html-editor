@@ -1,4 +1,6 @@
 (function () {
+    let tags = [];
+
     const editorMixin = {
         callbacks: {
             onChange: function(contents, $editable) {
@@ -9,7 +11,9 @@
 
     const displayUnfilledTags = (arr) => {
         if (Array.isArray(arr)) {
-            let str = ''
+            let str = '';
+
+            tags = arr;
 
             arr.forEach(tag => {
                 str += `<div class="tag-to-be-filled">{{&nbsp;${tag}&nbsp;}}</div>`
@@ -56,6 +60,8 @@
                 });
                 $('.action-buttons-wrapper').show();
                 $('.document-name').html(`${fileName}.html`);
+
+                addHighlightListener();
             })
                 .catch(() => {
                     document.body.innerHTML = '<h1">Document Not found</h1>'
@@ -71,6 +77,8 @@
             $('#save-btn').remove();
             $('.action-buttons-wrapper').show();
             $('.divider, #create-new').remove();
+
+            addHighlightListener();
         }
     }
 
@@ -85,6 +93,59 @@
     const redirect = () => {
         window.location.href = '/';
 
+    }
+
+    const addHighlightListener = () => {
+        document.querySelectorAll('.note-editable')[0].addEventListener('mouseup', (e) => {
+            const highlightedText = getHighlightedText();
+
+            document.body.querySelectorAll('.popup')[0]?.remove();
+
+            if (`${highlightedText}`.trim()) {
+                showPopup(e.pageX, e.pageY, highlightedText);
+            }
+        });
+    }
+
+    const getHighlightedText = () => {
+        const selection = window.getSelection();
+
+        return selection.toString();
+    }
+
+    const showPopup = (x, y, highlightedText) => {
+        const popup = document.createElement('div');
+
+        if (!tags.length) {
+            return;
+        }
+
+        popup.className = 'popup';
+        popup.style.top = y + 'px';
+        popup.style.left = x + 'px';
+
+        tags.forEach((option) => {
+            const button = document.createElement('button');
+            const optionAsTag = `{{ ${option} }}`
+
+            button.textContent = optionAsTag;
+            button.addEventListener('click', () => {
+                replaceText(highlightedText, optionAsTag);
+                document.body.removeChild(popup);
+            });
+            popup.appendChild(button);
+        });
+
+        // Append the popup to the body
+        document.body.appendChild(popup);
+    }
+
+    const replaceText = (oldText, newText) => {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+
+        range.deleteContents();
+        range.insertNode(document.createTextNode(newText));
     }
 
     $('#save-btn').click(() => {
