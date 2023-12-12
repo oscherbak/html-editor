@@ -4,24 +4,33 @@
     const editorMixin = {
         callbacks: {
             onChange: function(contents, $editable) {
-                displayUnfilledTags(extractContentInDoubleBraces(contents));
+                // displayUnfilledTags(extractContentInDoubleBraces(contents));
+                setTags(extractContentInDoubleBraces(contents));
             }
         }
     }
 
-    const displayUnfilledTags = (arr) => {
-        if (Array.isArray(arr)) {
-            let str = '';
-
-            tags = arr;
-
-            arr.forEach(tag => {
-                str += `<div class="tag-to-be-filled">{{&nbsp;${tag}&nbsp;}}</div>`
-            })
-
-            document.getElementById('unfilled-tags').innerHTML = str;
+    const setTags = (arr) => {
+        const onlyUnique = (value, index, array) => {
+            return array.indexOf(value) === index;
         }
+
+        tags = arr.filter(onlyUnique);
     }
+
+    // const displayUnfilledTags = (arr) => {
+    //     if (Array.isArray(arr)) {
+    //         let str = '';
+    //
+    //         tags = arr;
+    //
+    //         arr.forEach(tag => {
+    //             str += `<div class="tag-to-be-filled">{{&nbsp;${tag}&nbsp;}}</div>`
+    //         })
+    //
+    //         document.getElementById('unfilled-tags').innerHTML = str;
+    //     }
+    // }
 
     const extractContentInDoubleBraces = (inputString) => {
         const regex = /{{(.*?)}}/g;
@@ -51,7 +60,8 @@
             $.ajax(`/storage/${fileName}.html`).then((res) => {
                 const $summernoteBlock = $('#summernote');
 
-                displayUnfilledTags(extractContentInDoubleBraces(res));
+                // displayUnfilledTags(extractContentInDoubleBraces(res));
+                setTags(extractContentInDoubleBraces(res));
 
                 $summernoteBlock[0].innerHTML = res;
                 $summernoteBlock.summernote({
